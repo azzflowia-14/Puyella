@@ -14,8 +14,8 @@ export const config = {
   evolutionApiKey: required("EVOLUTION_API_KEY"),
   evolutionInstance: required("EVOLUTION_INSTANCE"),
 
-  // Claude API
-  anthropicApiKey: required("ANTHROPIC_API_KEY"),
+  // OpenAI API
+  openaiApiKey: required("OPENAI_API_KEY"),
 
   // Google Sheets
   googleSheetsId: required("GOOGLE_SHEETS_ID"),

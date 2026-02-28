@@ -5,7 +5,7 @@ export function buscarPorIds(
   ids: string[]
 ): Propiedad[] {
   return ids
-    .map((id) => propiedades.find((p) => p.id === id))
+    .map((id) => propiedades.find((p) => p.id === String(id)))
     .filter((p): p is Propiedad => p !== null && p !== undefined);
 }
 

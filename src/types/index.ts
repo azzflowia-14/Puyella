@@ -27,6 +27,10 @@ export interface WebhookMessage {
       extendedTextMessage?: {
         text?: string;
       };
+      audioMessage?: {
+        mimetype?: string;
+        seconds?: number;
+      };
     };
     messageType?: string;
     messageTimestamp?: number;

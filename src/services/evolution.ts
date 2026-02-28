@@ -1,7 +1,9 @@
 import { config } from "../config.js";
+import type { WebhookMessage } from "../types/index.js";
 
 const baseUrl = `${config.evolutionApiUrl}/message/sendText/${config.evolutionInstance}`;
 const mediaUrl = `${config.evolutionApiUrl}/message/sendMedia/${config.evolutionInstance}`;
+const base64Url = `${config.evolutionApiUrl}/chat/getBase64FromMediaMessage/${config.evolutionInstance}`;
 
 const headers = {
   "Content-Type": "application/json",
@@ -46,6 +48,32 @@ export async function enviarImagen(
   if (!res.ok) {
     const body = await res.text();
     console.error(`[Evolution] Error enviando imagen: ${res.status} ${body}`);
+  }
+}
+
+export async function descargarMedia(
+  messageKey: WebhookMessage["data"]["key"]
+): Promise<{ base64: string; mimetype: string } | null> {
+  try {
+    const res = await fetch(base64Url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        message: { key: messageKey },
+      }),
+    });
+
+    if (!res.ok) {
+      const body = await res.text();
+      console.error(`[Evolution] Error descargando media: ${res.status} ${body}`);
+      return null;
+    }
+
+    const data = await res.json() as { base64: string; mimetype: string };
+    return data;
+  } catch (error) {
+    console.error("[Evolution] Error descargando media:", error);
+    return null;
   }
 }
 

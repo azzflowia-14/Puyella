@@ -1,12 +1,40 @@
 services:
   evolution-api:
     image: atendai/evolution-api:latest
-    ports:
-      - "8080:8080"
+    network_mode: host
     environment:
       - AUTHENTICATION_API_KEY=evo-api-key-dev
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://evo:evo123@localhost:5433/evolution
+      - DATABASE_CONNECTION_CLIENT_NAME=evolution
+      - CACHE_REDIS_ENABLED=true
+      - CACHE_REDIS_URI=redis://localhost:6380
+      - CACHE_REDIS_PREFIX_KEY=evolution
+      - CACHE_LOCAL_ENABLED=false
+      - SERVER_PORT=8085
     volumes:
       - evolution_data:/evolution/instances
+    depends_on:
+      - evolution-db
+      - evolution-redis
+
+  evolution-db:
+    image: postgres:16-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=evo
+      - POSTGRES_PASSWORD=evo123
+      - POSTGRES_DB=evolution
+    volumes:
+      - evolution_db_data:/var/lib/postgresql/data
+
+  evolution-redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - evolution_redis_data:/data
 
   puyella-bot:
     build: .
@@ -19,3 +47,5 @@ services:
 
 volumes:
   evolution_data:
+  evolution_db_data:
+  evolution_redis_data:
